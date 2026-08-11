@@ -74,6 +74,31 @@ running natively on Windows ARM.
 Re-run `genproj.py` after adding or renaming sources. It reads the source
 directory, so new files are picked up automatically.
 
+### CI
+
+`.github/workflows/windows.yml` builds both plug-ins with MSBuild. GitHub's
+Windows runners already have the VS 2022 v143 toolset, so the only missing piece
+is the SDK, and that is a licensing problem rather than a technical one.
+
+The Windows build only needs about 400 MB of the SDK (`build/win`,
+`devtools/bin`, `source/{open,precomp,public,sdksamples}`, `external`), not the
+full 4 GB, so size is not the obstacle either.
+
+**This repo is public, so the SDK must not be cached, uploaded as an artifact or
+committed.** Two ways to give a runner access:
+
+- **Self-hosted runner.** Register a Windows machine that already has the SDK
+  unpacked, set the `SDK_PATH` repository variable, and switch `runs-on` to
+  self-hosted. The SDK never leaves your control. Best fit for a public repo.
+- **GitHub-hosted runner + private storage.** Put a zip somewhere
+  access-controlled and set the `SDK_ZIP_URL` secret to a pre-signed URL. This
+  does hand a copy to GitHub's infrastructure, so check it against the SDK
+  licence first.
+
+With neither configured the job stops early and says so rather than failing with
+a confusing compile error. It deliberately doesn't upload the built `.pln` as an
+artifact, since artifacts on a public repo are public.
+
 ### Cross-compiling from macOS
 
 Not practical. The SDK ships the Windows import libs and `Odfrc.exe`, but MSVC
