@@ -1,0 +1,67 @@
+//========================================================================================
+//  
+//  $File$
+//  
+//  Owner: swagarg
+//  
+//  $Author$
+//  
+//  $DateTime$
+//  
+//  $Revision$
+//  
+//  $Change$
+//
+//  ADOBE CONFIDENTIAL
+//  
+//  Copyright 2019 Adobe
+//  All Rights Reserved.
+//
+//  NOTICE: Adobe permits you to use, modify, and distribute this file in
+//  accordance with the terms of the Adobe license agreement accompanying
+//  it. If you have received this file from a source other than Adobe,
+//  then your use, modification, or distribution of it requires the prior
+//  written permission of Adobe. 
+//  
+//========================================================================================
+
+#ifdef __ODFRC__
+
+// English string table is defined here
+
+resource StringTable (kSDKDefStringsResourceID + index_enUS)
+{
+        k_enUS,									// Locale Id
+        kEuropeanWinToMacEncodingConverter,		// Character encoding converter (irp) I made this WinToMac as we have a bias to generate on Win...
+        {
+        	 // ----- Menu strings
+                kHttpLinkUICompanyKey,					kHttpLinkUICompanyValue,
+                kHttpLinkUIAboutMenuKey,					"About Web Links...",
+
+                kSDKDefAboutThisPlugInMenuKey,			kSDKDefAboutThisPlugInMenuValue_enUS,
+
+                // ----- Command strings
+
+                // ----- Window strings
+
+                // ----- Panel/dialog strings
+                kHttpLinkUIRelinkFromWebMenuKey, "Relink from Web...",
+                kHttpLinkUIRelinkDialogTitleKey, "Relink from Web",
+                kHttpLinkUIDragHintKey,     "Or drag an image from your browser onto the page.",
+                kHttpLinkUIExtsTitleKey,    "Accepted URL file types:",
+                kHttpLinkUIExtsRasterKey,   "  Images: " kHttpLnkExtsRaster1,
+                kHttpLinkUIExtsRaster2Key,  "      " kHttpLnkExtsRaster2,
+                kHttpLinkUIExtsVectorKey,   "  Vector/page: " kHttpLnkExtsVector,
+                kHttpLinkUIExtsInDesignKey, "  InDesign: " kHttpLnkExtsInDesign,
+                kHttpLinkUIExtsTextKey,     "  Text: " kHttpLnkExtsText,
+                kHttpLinkUIPanelTitleKey,				"Web Links",
+                "AssetURL",                                 "Asset URL:",
+                "PlaceURL",                                 "Place",
+
+                // ----- Misc strings
+                kHttpLinkUIAboutBoxStringKey,			kHttpLinkUIPluginName " [US], version " kHttpLinkUIVersion " by " kHttpLinkUIAuthor "\n\n" kSDKDefCopyrightStandardValue "\n\n" kSDKDefPartnersStandardValue_enUS,
+        }
+
+};
+
+#endif // __ODFRC__

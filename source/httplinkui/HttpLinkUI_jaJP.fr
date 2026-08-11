@@ -1,0 +1,70 @@
+//========================================================================================
+//  
+//  $File$
+//  
+//  Owner: swagarg
+//  
+//  $Author$
+//  
+//  $DateTime$
+//  
+//  $Revision$
+//  
+//  $Change$
+//
+//  ADOBE CONFIDENTIAL
+//  
+//  Copyright 2019 Adobe
+//  All Rights Reserved.
+//
+//  NOTICE: Adobe permits you to use, modify, and distribute this file in
+//  accordance with the terms of the Adobe license agreement accompanying
+//  it. If you have received this file from a source other than Adobe,
+//  then your use, modification, or distribution of it requires the prior
+//  written permission of Adobe. 
+//  
+//========================================================================================
+
+#ifdef __ODFRC__
+
+
+// Japanese string table is defined here
+
+resource StringTable (kSDKDefStringsResourceID + index_jaJP)
+{
+        k_jaJP,	// Locale Id
+        0,		// Character encoding converter
+
+        {
+        	// ----- Menu strings
+                kHttpLinkUICompanyKey,					kHttpLinkUICompanyValue,
+                kHttpLinkUIAboutMenuKey,					kHttpLinkUIPluginName "[JP]...",
+
+                kSDKDefAboutThisPlugInMenuKey,			kSDKDefAboutThisPlugInMenuValue_jaJP,
+                // ----- Command strings
+
+                // ----- Window strings
+
+                // ----- Panel/dialog strings
+                kHttpLinkUIRelinkFromWebMenuKey, "Relink from Web...",
+                kHttpLinkUIRelinkDialogTitleKey, "Relink from Web[JP]",
+                kHttpLinkUIDragHintKey,     "Or drag an image from your browser onto the page.[JP]",
+                kHttpLinkUIExtsTitleKey,    "Accepted URL file types:[JP]",
+                kHttpLinkUIExtsRasterKey,   "  Images: " kHttpLnkExtsRaster1,
+                kHttpLinkUIExtsRaster2Key,  "      " kHttpLnkExtsRaster2,
+                kHttpLinkUIExtsVectorKey,   "  Vector/page: " kHttpLnkExtsVector,
+                kHttpLinkUIExtsInDesignKey, "  InDesign: " kHttpLnkExtsInDesign,
+                kHttpLinkUIExtsTextKey,     "  Text: " kHttpLnkExtsText,
+                kHttpLinkUIPanelTitleKey,				kHttpLinkUIPluginName "[JP]",
+                "AssetURL",                              "Select asset[JP]:",
+                "PlaceURL",                                    "Place[JP]",
+
+              // ----- Error strings
+
+                // ----- Misc strings
+                kHttpLinkUIAboutBoxStringKey,			kHttpLinkUIPluginName " [JP], version " kHttpLinkUIVersion " by " kHttpLinkUIAuthor "\n\n" kSDKDefCopyrightStandardValue "\n\n" kSDKDefPartnersStandardValue_jaJP,
+        }
+
+};
+
+#endif // __ODFRC__
