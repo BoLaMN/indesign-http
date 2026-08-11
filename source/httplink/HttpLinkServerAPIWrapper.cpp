@@ -40,7 +40,7 @@
 // by it.
 const int kStatusRequestTimeout_InMS = 4 * 1000;
 
-// Header names we read off a response. Compared case-insensitively -- servers
+// Header names we read off a response. Compared case-insensitively, since servers
 // vary, and HTTP header names are case-insensitive per RFC 9110.
 static const char* kHDR_ETAG           = "etag";
 static const char* kHDR_LASTMODIFIED   = "last-modified";
@@ -437,7 +437,7 @@ bool16 HttpLnkServerAPIWrapper::AsyncRequestAssetStatusWithMetadata(IHTTPLinkRes
 //
 // There is no batch endpoint on a plain web server, so we fan out into
 // individual probes and re-assemble. The links subsystem only calls this when
-// IsBatchUpdateSupported() is true -- which it is not for us -- but the method
+// IsBatchUpdateSupported() is true, which it is not for us, but the method
 // is pure virtual, so it gets a correct implementation rather than a stub.
 //========================================================================================
 bool16 HttpLnkServerAPIWrapper::AsyncRequestBatchAssetStatusWithMetadata(IHTTPLinkResourceConnection* connection,
@@ -600,7 +600,7 @@ bool16 HttpLnkServerAPIWrapper::IsServerAccessible(IHTTPLinkResourceConnection* 
 void HttpLnkServerAPIWrapper::ServerAccessibleCallbackOnWorkerThread(IDHTTPWrapper::RequestID inRequestID,
                                                                       IDHTTPWrapper::Response inResponse)
 {
-    // Any answer at all -- even a 404 for the origin root -- proves the server
+    // Any answer at all, even a 404 for the origin root, proves the server
     // is reachable. Only a transport failure means "not accessible".
     ts_SyncServerAccessible      = inResponse.IsNetworkConnectivityError() ? kFalse : kTrue;
     ts_SyncServerAccessibleValid = kTrue;
@@ -614,7 +614,7 @@ bool16 HttpLnkServerAPIWrapper::FetchAssetPathAndRequestHeadersForDownload(IHTTP
                                                                            URI& assetURL,
                                                                            HTTPLinkSubsystemTypes::Headers& headers) const
 {
-    // Carry authority, path, query and fragment through verbatim -- this is what
+    // Carry authority, path, query and fragment through verbatim. This is what
     // makes arbitrary hosts work, where the SDK sample pinned one server.
     assetURL = ToWireURI(inURI);
 

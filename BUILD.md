@@ -5,7 +5,7 @@ build/mac/build.sh            # both plug-ins, Release + Debug
 build/mac/build.sh Release    # or one config
 ```
 
-Use the script, not bare `xcodebuild` — see [Why the script](#why-the-script).
+Use the script, not bare `xcodebuild`. See [Why the script](#why-the-script).
 
 ## You need
 
@@ -14,7 +14,7 @@ Use the script, not bare `xcodebuild` — see [Why the script](#why-the-script).
 - InDesign 21.4 or newer to load the result
 
 The SDK is licence-restricted and about 4 GB, so it isn't committed. Get it from
-<https://developer.adobe.com/console/downloads>. `server_sdk/` is optional — it's
+<https://developer.adobe.com/console/downloads>. `server_sdk/` is optional; it's
 client-side sample code and isn't needed to build.
 
 If you keep the SDK elsewhere, change `ID_SDK_ROOT` in
@@ -50,8 +50,8 @@ paths from `ID_PRJ_DIR`. Ours doesn't, so the files in
 
 Three link-time search paths (`ID_DYLIBS_RELDIR`, `ID_STATICLIBS_RELDIR`,
 `ID_FRAMEWORKS_RELDIR`) come off the project dir rather than `ID_SDK_ROOT`, so
-they're overridden explicitly — `InDesignModel.framework` and `libPublicPlugIn.a`
-live in the SDK. Build output still lands in this repo.
+they're overridden explicitly, since `InDesignModel.framework` and
+`libPublicPlugIn.a` live in the SDK. Build output still lands in this repo.
 
 ## Windows
 
@@ -63,8 +63,8 @@ Generates both `.vcxproj` files from the SDK's samples, supplying the `id_sdk_di
 macro the SDK leaves undefined and putting `devtools\bin` on `ExecutablePath` so
 ODFRC resolves without editing VC++ Directories by hand.
 
-**Never compiled.** The projects are structurally checked — valid XML, every
-source referenced, no dangling paths — but no Windows machine has run MSBuild
+**Never compiled.** The projects are structurally checked (valid XML, every
+source referenced, no dangling paths) but no Windows machine has run MSBuild
 over them. Expect real errors first time.
 
 The SDK ships x64 only (`build/win` has `debugx64`/`releasex64` and the sample
@@ -82,7 +82,7 @@ licence-restricted. `clang-cl` is ABI-compatible and `xwin` can fetch the header
 but you'd have to re-express the build outside MSBuild, work around 22 sources
 relying on MSVC precompiled headers, and run `Odfrc.exe` under Wine. Use a
 Windows box, a VM, or CI. CI needs a self-hosted runner or a cached copy of the
-SDK — it's too big and too licence-restricted to check out.
+SDK; it's too big and too licence-restricted to check out.
 
 ## InDesign Server
 
@@ -95,7 +95,7 @@ scripting logic there; the UI plug-in is desktop-only and Server won't load it.
 
 InDesign gates plug-ins on the dot release, not just the major version.
 
-This SDK targets 21.4. A plug-in built from it won't load into 21.0.1 — you get a
+This SDK targets 21.4. A plug-in built from it won't load into 21.0.1: you get a
 startup alert saying it requires 21.4. It does load into 21.5.1, so newer
 applications are fine.
 

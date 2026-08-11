@@ -276,7 +276,7 @@ HttpLinkUIDDTargetFlavorHelper::CouldAcceptTypes(const IDragDropTarget* target,
     //
     // This helper is consulted for every drag over the layout, including
     // InDesign's own internal page-item drags. Those advertise a text flavour
-    // among others, which our text fallback below happily matched -- so we were
+    // among others, which our text fallback below happily matched, so we were
     // claiming internal drags and silently swallowing them. The visible symptom
     // was that a placed frame could be selected but not dragged: selection is
     // not a drag operation, so it still worked, while the move was intercepted.
@@ -388,7 +388,7 @@ ErrorCode HttpLinkUIDDTargetFlavorHelper::ProcessDragDropCommand(IDragDropTarget
         Utils<Facade::ILinkFacade>()->SetHTTPLinksDefaultRenditionType(ILinkResourceRenditionData::kOriginal);
 
         // Load the place gun instead of dropping immediately, so the user draws
-        // the frame -- which is what makes this feel like a normal Place.
+        // the frame, which is what makes this feel like a normal Place.
         stat = Utils<Facade::IImportExportFacade>()->ImportAndLoadPlaceGun(
             db, resourceURI, kMinimalUI, kFalse, kFalse, kFalse,
             UID(kInvalidUID), IPlaceGun::kAddToFront);

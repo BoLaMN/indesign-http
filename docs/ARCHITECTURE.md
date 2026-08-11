@@ -40,7 +40,7 @@ Links are stored as `idhttp://` / `idhttps://`, mapped to the real scheme in
 
 Adobe's sample readme spells out why: scheme registration is global and
 first-come, so two vendors both claiming `https` conflict and the loser's links
-stop resolving. Users never see the internal form — `GetLongResourceName`
+stop resolving. Users never see the internal form: `GetLongResourceName`
 rewrites it for the panel and the scripting API exposes `remoteURL`. The stock
 `link.linkResourceURI` is the one place it shows through.
 
@@ -48,7 +48,7 @@ rewrites it for the panel and the scripting API exposes `remoteURL`. The stock
 
 A ranged `GET` (`Range: bytes=0-0`) gets us `ETag`, `Last-Modified` and
 `Content-Range`. The ETag becomes the resource stamp the panel compares, which is
-what drives the out-of-date badge — and why there's a **Version tag** Link Info
+what drives the out-of-date badge, and why there's a **Version tag** Link Info
 row, since otherwise that comparison is invisible when a link won't update.
 
 Servers that ignore `Range` answer 200 with the whole body. Still correct, just
@@ -63,7 +63,7 @@ VPN marks every link in the document broken.
 Not laziness. The framework treats a disconnected connection as fatal:
 `HTTPAssetLinkResourceStateUpdater::UpdateLinkResourceState` forces the resource
 to `kInaccessible` and `HTTPAssetLinkResourceHandler` refuses to serve it.
-Anonymous HTTP is sessionless — nothing to connect to or keep alive — so
+Anonymous HTTP is sessionless (nothing to connect to or keep alive) so
 reporting "not connected" fails every link before a request is even attempted.
 
 This bit us: links came back unresolved after closing and reopening a document,
@@ -74,7 +74,7 @@ does reject us still gets the last word via the status probe seeing the 401.
 
 EVE layout. Two things worth not relearning:
 
-- `kEllipsizeEnd` makes static text *shrinkable* — EVE collapses it to a sliver
+- `kEllipsizeEnd` makes static text *shrinkable*. EVE collapses it to a sliver
   under pressure. Use `kDontEllipsize` plus explicit alignment.
 - Panel size is cached in `~/Library/Caches/Adobe InDesign/Version 21.0/en_US/InDesign SavedData`.
   A changed default frame won't apply until that's cleared or the user resizes.
@@ -92,9 +92,9 @@ panel. Three things it has to get right, each a bug first:
 2. **Don't use `InternalizeDrag`.** Nothing in InDesign claims
    `kURLExternalFlavor`, so it always fails and the drop silently does nothing.
    The URL is read off the drag item with `GetStreamForReading()` during
-   `CouldAcceptTypes()` — the only point we get the iterator — and stashed.
+   `CouldAcceptTypes()`, the only point we get the iterator, and stashed.
 3. **Gate on file extension.** Dragging a link gives you the page URL, not the
-   image, and placing an HTML document isn't a no-op — the probe fetches it and
+   image, and placing an HTML document isn't a no-op: the probe fetches it and
    the import providers chew on it.
 
 Logging behind `kHttpLnkDnDLogging`, off by default. Kept because all three of
@@ -113,7 +113,7 @@ links don't gain three blank rows.
 
 The `http(s)` → `idhttp(s)` conversion exists in both
 `httplinkui/HttpLinkUIURLUtils.h` and `httplink/HttpLinkScriptProvider.cpp`. The
-model plug-in can't include a UI header — under Server the UI plug-in isn't
+model plug-in can't include a UI header, because under Server the UI plug-in isn't
 there. That's the price of Server support.
 
 It's already drifted once: the model copy compared 9 characters against the

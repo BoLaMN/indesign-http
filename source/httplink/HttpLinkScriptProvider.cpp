@@ -6,7 +6,7 @@
 //  and link.remoteURL.
 //
 //  Lives in the model plug-in so ExtendScript, UXP and InDesign Server all reach
-//  it -- the scripting DOM is the only C++/UXP bridge, and Server never loads a
+//  it. The scripting DOM is the only C++/UXP bridge, and Server never loads a
 //  UI plug-in. Scripts pass ordinary http(s) URLs; the idhttp scheme stays
 //  internal.
 //
@@ -225,7 +225,7 @@ ErrorCode HttpLnkScriptProvider::PlaceFromURL(IScriptRequestData* data, IScript*
         return Utils<IScriptErrorUtils>()->SetInvalidParameterErrorData(data, p_HttpLnkURLParam);
 
     // The method is declared on the Document object, so the target is whichever
-    // document the script called it on -- explicit, and it works headless.
+    // document the script called it on: explicit, and it works headless.
     InterfacePtr<IDocument> document(parent, UseDefaultIID());
     if (document == nil)
         return kFailure;

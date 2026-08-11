@@ -146,7 +146,7 @@ protected:
                 out = PMString("Downloading");
                 break;
             case ILinkResource::kInaccessible:
-                // Network trouble, auth failure or a 5xx -- the asset may well be
+                // Network trouble, auth failure or a 5xx. The asset may well be
                 // fine, we just could not confirm it.
                 out = PMString("Unreachable");
                 break;

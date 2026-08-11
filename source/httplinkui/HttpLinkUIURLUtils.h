@@ -48,7 +48,7 @@ inline bool16 HttpLinkUIBuildResourceURI(const PMString& typed, URI& outURI)
     else if (url.compare(0, 7, "http://") == 0)  { scheme = kHttpLnkScheme;       url.erase(0, 7); }
     else if (url.compare(0, 10, "idhttps://") == 0 || url.compare(0, 9, "idhttp://") == 0)
     {
-        // Already one of our URIs -- accept verbatim. Without this, such a string
+        // Already one of our URIs, so accept verbatim. Without this, such a string
         // would fall into the bare-host branch below and be mangled into
         // "idhttps://idhttp://host/path", which passes validation (the authority
         // is non-empty) and silently creates a broken link.

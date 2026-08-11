@@ -3,7 +3,7 @@
 Works the same from ExtendScript (`.jsx`), UXP (`.idjs`, UXP panels) and
 InDesign Server.
 
-That's not a coincidence — the scripting DOM is the only bridge InDesign offers.
+That's not a coincidence. The scripting DOM is the only bridge InDesign offers.
 There's no C++ ↔ UXP calling convention, so one `IScriptProvider` in the model
 plug-in serves all three. Putting it in the UI plug-in would have cut out Server,
 which never loads one.
@@ -44,7 +44,7 @@ when relinking creates a new link object.
 ### `link.isRemoteLink` → Boolean, read-only
 ### `link.remoteURL` → String, read-only
 
-The real `http(s)` URL, empty for links that aren't ours. Read-only on purpose —
+The real `http(s)` URL, empty for links that aren't ours. Read-only on purpose:
 changing the URL is what `relinkToURL()` is for, so the relink actually happens
 instead of a string being rewritten under a stale asset.
 
@@ -54,7 +54,7 @@ Still useful alongside:
 
 | | |
 |---|---|
-| `link.linkResourceURI` | stored URI — shows the internal `idhttp(s)://` form |
+| `link.linkResourceURI` | stored URI, shows the internal `idhttp(s)://` form |
 | `link.status` | `LinkStatus.NORMAL`, `LINK_OUT_OF_DATE`, `LINK_MISSING`, … |
 | `link.update()` | force a re-fetch |
 
@@ -102,7 +102,7 @@ for (var i = 0; i < urls.length; i++) {
 
 ## Server
 
-Nothing extra to do — the model plug-in declares `kInDesignServerProduct` and
+Nothing extra to do. The model plug-in declares `kInDesignServerProduct` and
 links `InDesignModel.framework`, so the same binary loads and the whole API above
 is there.
 

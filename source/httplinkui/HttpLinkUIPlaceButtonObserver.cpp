@@ -3,7 +3,7 @@
 //  HttpLinkUIPlaceButtonObserver.cpp
 //
 //  Watches the panel's Place button. On click it reads the URL the user typed,
-//  rewrites it onto our private scheme, and loads the place gun -- so placing a
+//  rewrites it onto our private scheme, and loads the place gun, so placing a
 //  remote asset feels exactly like File > Place, cursor and all.
 //
 //  Derived from the CustomHttpLink SDK sample, which offered a dropdown of
@@ -124,7 +124,7 @@ void HttpLinkUIPlaceButtonObserver::Update(const ClassID& theChange, ISubject* t
 
     // Full-resolution originals: we deliberately do not request FPO renditions
     // the way the SDK sample does, because a generic web server has only the one
-    // asset -- there is no proxy to fall back to.
+    // asset, so there is no proxy to fall back to.
     Utils<Facade::ILinkFacade>()->SetHTTPLinksDefaultRenditionType(ILinkResourceRenditionData::kOriginal);
 
     const ErrorCode err = Utils<Facade::IImportExportFacade>()->ImportAndLoadPlaceGun(

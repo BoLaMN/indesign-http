@@ -118,7 +118,7 @@ DECLARE_PMID(kImplementationIDSpace, kHttpLnkStampInfoProviderImpl, kHttpLinkPre
 //DECLARE_PMID(kImplementationIDSpace, kHttpLinkImpl, kHttpLinkPrefix + 25)
 
 
-// ScriptInfo IDs -- the scripting surface, shared by ExtendScript, UXP and
+// ScriptInfo IDs for the scripting surface, shared by ExtendScript, UXP and
 // InDesign Server (all three drive the same DOM; there is no C++/UXP bridge).
 DECLARE_PMID(kScriptInfoIDSpace, kHttpLnkPlaceFromURLMethodScriptElement,  kHttpLinkPrefix + 0)
 DECLARE_PMID(kScriptInfoIDSpace, kHttpLnkRelinkToURLMethodScriptElement,   kHttpLinkPrefix + 1)
