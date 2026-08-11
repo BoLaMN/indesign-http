@@ -20,6 +20,7 @@
 #include "ILink.h"
 #include "ILinkFacade.h"
 #include "ILinkManager.h"
+#include "IHierarchy.h"
 #include "ILinkResource.h"
 #include "IPlaceGun.h"
 #include "IScript.h"
@@ -33,6 +34,7 @@
 #include "Utils.h"
 
 #include "HttpLinkID.h"
+
 
 /** Adds the HttpLink methods and properties to the Application and Link objects.
     @ingroup httplink.sdk
@@ -67,6 +69,9 @@ private:
 
     /** The ILink behind the Link script object the call was made on. */
     static ILink* QueryLinkFromScript(IScript* parent);
+
+    /** The link for a placed item, searching the item then its descendants. */
+    static UID FindLinkForItem(ILinkManager* linkMgr, IDataBase* db, UID itemUID, int depth = 0);
 };
 
 CREATE_PMINTERFACE(HttpLnkScriptProvider, kHttpLnkScriptProviderImpl)
@@ -148,6 +153,28 @@ bool16 HttpLnkScriptProvider::GetURLParam(IScriptRequestData* data, PMString& ou
     if (data->ExtractRequestData(p_HttpLnkURLParam, scriptData) != kSuccess)
         return kFalse;
     return scriptData.GetPMString(outURL) == kSuccess;
+}
+
+UID HttpLnkScriptProvider::FindLinkForItem(ILinkManager* linkMgr, IDataBase* db, UID itemUID, int depth)
+{
+    if (linkMgr == nil || itemUID == kInvalidUID || depth > 4)
+        return kInvalidUID;
+
+    ILinkManager::QueryResult links;
+    if (linkMgr->QueryLinksByObjectUID(itemUID, links) > 0 && !links.empty())
+        return links.front();
+
+    InterfacePtr<IHierarchy> hierarchy(db, itemUID, UseDefaultIID());
+    if (hierarchy == nil)
+        return kInvalidUID;
+
+    for (int32 i = 0; i < hierarchy->GetChildCount(); ++i)
+    {
+        const UID found = FindLinkForItem(linkMgr, db, hierarchy->GetChildUID(i), depth + 1);
+        if (found != kInvalidUID)
+            return found;
+    }
+    return kInvalidUID;
 }
 
 ILink* HttpLnkScriptProvider::QueryLinkFromScript(IScript* parent)
@@ -239,10 +266,39 @@ ErrorCode HttpLnkScriptProvider::PlaceFromURL(IScriptRequestData* data, IScript*
     const ErrorCode err = Utils<Facade::IImportExportFacade>()->ImportAndLoadPlaceGun(
         db, resourceURI, kSuppressUI, kFalse, kFalse, kFalse,
         UID(kInvalidUID), IPlaceGun::kAddToFront);
+    if (err != kSuccess)
+        return err;
 
-    // Declared VoidType: the DOM reports failure by raising, so there is no
-    // boolean to hand back. Returning err is what surfaces the error to script.
-    return err;
+    // Hand back the Link so callers can check status or relink without hunting
+    // through doc.links. The item is in the place gun rather than on a page, but
+    // the import has already created the resource and the link, so the Link
+    // object is live: place it with page.place() when ready.
+    InterfacePtr<IPlaceGun> placeGun(document, UseDefaultIID());
+    if (placeGun == nil || !placeGun->IsLoaded())
+        return kSuccess;
+
+    const UID itemUID = placeGun->GetFirstPlaceGunItemUID();
+    if (itemUID == kInvalidUID)
+        return kSuccess;
+
+    InterfacePtr<ILinkManager> linkMgr(db, db->GetRootUID(), UseDefaultIID());
+    if (linkMgr == nil)
+        return kSuccess;
+
+    // The place gun holds the frame; the link hangs off the graphic inside it,
+    // so check the item first and then walk down.
+    const UID linkUID = FindLinkForItem(linkMgr, db, itemUID);
+    if (linkUID == kInvalidUID)
+        return kSuccess;
+
+    InterfacePtr<IScript> linkScript(db, linkUID, UseDefaultIID());
+    if (linkScript == nil)
+        return kSuccess;
+
+    ScriptData out;
+    out.SetObject(linkScript);
+    data->AppendReturnData(parent, e_HttpLnkPlaceFromURL, out);
+    return kSuccess;
 }
 
 //========================================================================================

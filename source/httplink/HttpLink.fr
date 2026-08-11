@@ -270,7 +270,8 @@ resource VersionedScriptElementInfo(1)
 			e_HttpLnkPlaceFromURL,
 			"place from URL",
 			"Load the place gun with a web asset addressed by an http(s) URL.",
-			VoidType,
+			ObjectType( kLinkObjectScriptElement ),
+			"the new link",
 			{
 				p_HttpLnkURLParam, "url", "The http:// or https:// URL of the asset.", StringType, kRequired,
 			}

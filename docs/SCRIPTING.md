@@ -10,17 +10,23 @@ which never loads one.
 
 ## Document
 
-### `doc.placeFromURL(url)`
+### `doc.placeFromURL(url)` → Link
 
-Loads the place gun. The user (or the next scripted click) places it.
+Loads the place gun and returns the Link, so you can check or adjust it without
+hunting through `doc.links`.
 
 ```js
 var doc = app.documents.add();
-doc.placeFromURL("https://cdn.example.com/hero.jpg");
+var link = doc.placeFromURL("https://cdn.example.com/hero.jpg");
+link.name         // "hero.jpg"
+link.remoteURL    // "https://cdn.example.com/hero.jpg"
 ```
 
+The item sits in the place gun rather than on a page, but the import has already
+created the resource and the link, so the Link is live. Place it when ready.
+
 A bare host is assumed `https` rather than downgraded to plaintext. Failures
-raise; there's no return value.
+raise.
 
 It's on Document rather than Application so the target is explicit and it works
 headless. `ILayoutUIUtils::GetFrontDocument()` would have been easier and would

@@ -38,9 +38,8 @@ Restart and check Help ▸ About Plug-ins.
 Same code from `.jsx`, `.idjs` and Server:
 
 ```js
-doc.placeFromURL("https://cdn.example.com/hero.jpg");
+var link = doc.placeFromURL("https://cdn.example.com/hero.jpg");
 
-var link = doc.links.item(0);
 link.relinkToURL("https://cdn.example.com/other.jpg");
 link.isRemoteLink   // read-only
 link.remoteURL      // read-only
