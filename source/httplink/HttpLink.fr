@@ -1,0 +1,338 @@
+//========================================================================================
+//  
+//  $File$
+//  
+//  Owner: swagarg
+//  
+//  $Author$
+//  
+//  $DateTime$
+//  
+//  $Revision$
+//  
+//  $Change$
+//  
+//  ADOBE CONFIDENTIAL
+//  
+//  Copyright 2019 Adobe
+//  All Rights Reserved.
+//
+//  NOTICE: Adobe permits you to use, modify, and distribute this file in
+//  accordance with the terms of the Adobe license agreement accompanying
+//  it. If you have received this file from a source other than Adobe,
+//  then your use, modification, or distribution of it requires the prior
+//  written permission of Adobe. 
+//  
+//========================================================================================
+
+#include "VCPlugInHeaders.h"
+
+// General includes:
+#include "LocaleIndex.h"
+#include "PMLocaleIds.h"
+#include "StringTable.fh"
+#include "ObjectModelTypes.fh"
+#include "ShuksanID.h"
+#include "LinksID.h"
+#include "ScriptingID.h"
+#include "JavaScriptID.h"
+#include "ScriptInfoTypes.fh"
+#include "DocFrameworkID.h"   // kDocumentObjectScriptElement
+#include "HttpLinkID.h"
+#include "BuildNumber.h"
+#include "PlugInModel_UIAttributes.h"
+
+// Project includes:
+
+#ifdef __ODFRC__
+
+/*
+ * To modify the Default HTTP Links rendition type (kFPO or kOriginal),
+ * use ILinkFacade::SetHTTPLinksDefaultRenditionType
+ */
+
+/*
+ * Plugin version definition.
+ */
+resource PluginVersion (kSDKDefPluginVersionResourceID)
+{
+	kTargetVersion,
+	kHttpLinkPluginID,
+	kSDKDefPlugInMajorVersionNumber, kSDKDefPlugInMinorVersionNumber,
+	kSDKDefHostMajorVersionNumber, kSDKDefHostMinorVersionNumber,
+	kHttpLinkCurrentMajorFormatNumber, kHttpLinkCurrentMinorFormatNumber,
+	{ kInDesignProduct, kInCopyProduct, kInDesignServerProduct },
+	{ kWildFS },
+	kModelPlugIn,
+	kHttpLinkVersion
+};
+
+/*  
+ * The ExtraPluginInfo resource adds extra information to the Missing Plug-in dialog
+ * that is popped when a document containing this plug-in's data is opened when
+ * this plug-in is not present. These strings are not translatable strings
+ * since they must be available when the plug-in isn't around. They get stored
+ * in any document that this plug-in contributes data to.
+ */
+resource ExtraPluginInfo(1)
+{
+	kHttpLinkCompanyValue,			// Company name
+	kHttpLinkMissingPluginURLValue,	// URL 
+	kHttpLinkMissingPluginAlertValue,	// Missing plug-in alert text
+};
+
+/* 
+ * Boss class definitions.
+ */
+resource ClassDescriptionTable(kSDKDefClassDescriptionTableResourceID)
+{{{
+    
+     Class
+     {
+          kHttpLnkLinkResourceProviderBoss,
+          kInvalidClass,
+          {
+               IID_IK2SERVICEPROVIDER,                kHTTPLinkSubsystemObjectProviderImpl,
+               IID_IHTTPLINKSUBSYSTEMOBJECTFACTORY,   kHttpLnkLinkResourceFactoryImpl,
+          }
+     },
+     
+     Class
+     {
+          kHttpLnkLinkResourceServerHelperBoss,
+          kHTTPAssetLinkResourceServerHelperBoss,
+          {
+               IID_IHTTPLINKRESOURCESERVERAPIWRAPPER,    kHttpLnkResourceServerAPIWrapperImpl,
+          }
+     },
+     
+     Class
+     {
+          kHttpLnkLinkResourceHelperBoss,
+          kHTTPAssetLinkResourceHelperBoss,
+          {
+               IID_IHTTPLINKRESOURCECONNECTION,           kHttpLnkLinkResourceConnectionImpl,
+               IID_IHTTPLINKRESOURCESTATEBATCHUPDATER,    kHttpLnkLinkResourceStateBatchUpdaterImpl,
+          }
+     },
+     
+     Class
+     {
+          kHttpLnkLinkResourceHandlerBoss,
+          kHTTPAssetLinkResourceHandlerBoss,
+          {
+               IID_ILINKRESOURCEHANDLER,                kHttpLnkLinkResourceHandlerImpl,
+               IID_ILINKRESOURCEHELPERHANDLER,          kHttpLnkLinkResourceHelperHandlerImpl,
+          }
+     },
+
+
+    Class
+    {
+        kHttpLnkLinkResourceStateUpdaterBoss,
+        kInvalidClass,
+        {
+            IID_ILINKRESOURCESTATEUPDATER,            kHttpLnkLinkResourceStateUpdaterImpl,
+        }
+    },
+
+
+    /** Adds the HttpLink scripting surface. Lives in the model plug-in so that
+        ExtendScript, UXP and InDesign Server all reach it -- Server never loads
+        a UI plug-in.
+    */
+    Class
+    {
+        kHttpLnkScriptProviderBoss,
+        kBaseScriptProviderBoss,
+        {
+            IID_ISCRIPTPROVIDER, kHttpLnkScriptProviderImpl,
+        }
+    },
+
+    /** Extra rows in the Links panel's Link Info pane. One service-provider boss
+        per row; InDesign walks the kLinkInfoService registry and asks each for a
+        label and a value.
+    */
+    Class
+    {
+        kHttpLnkURLInfoProviderBoss,
+        kInvalidClass,
+        {
+            IID_IK2SERVICEPROVIDER, kLinkInfoServiceImpl,
+            IID_ILINKINFOPROVIDER,  kHttpLnkURLInfoProviderImpl,
+        }
+    },
+
+    Class
+    {
+        kHttpLnkStatusInfoProviderBoss,
+        kInvalidClass,
+        {
+            IID_IK2SERVICEPROVIDER, kLinkInfoServiceImpl,
+            IID_ILINKINFOPROVIDER,  kHttpLnkStatusInfoProviderImpl,
+        }
+    },
+
+    Class
+    {
+        kHttpLnkStampInfoProviderBoss,
+        kInvalidClass,
+        {
+            IID_IK2SERVICEPROVIDER, kLinkInfoServiceImpl,
+            IID_ILINKINFOPROVIDER,  kHttpLnkStampInfoProviderImpl,
+        }
+    },
+
+}}};
+
+/*  
+ * Implementation definition.
+ */
+resource FactoryList (kSDKDefFactoryListResourceID)
+{
+	kImplementationIDSpace,
+	{
+		#include "HttpLinkFactoryList.h"
+	}
+};
+
+
+/*  
+ * Locale Indicies.
+ * The LocaleIndex should have indicies that point at your
+ * localizations for each language system that you are localized for.
+ */
+
+/*  
+ * String LocaleIndex.
+ */
+resource LocaleIndex ( kSDKDefStringsResourceID)
+{
+	kStringTableRsrcType,
+	{
+		kWildFS, k_enUS, kSDKDefStringsResourceID + index_enUS
+		kWildFS, k_enGB, kSDKDefStringsResourceID + index_enUS
+		kWildFS, k_deDE, kSDKDefStringsResourceID + index_enUS
+		kWildFS, k_frFR, kSDKDefStringsResourceID + index_enUS
+		kWildFS, k_esES, kSDKDefStringsResourceID + index_enUS
+		kWildFS, k_ptBR, kSDKDefStringsResourceID + index_enUS
+		kWildFS, k_svSE, kSDKDefStringsResourceID + index_enUS
+		kWildFS, k_daDK, kSDKDefStringsResourceID + index_enUS
+		kWildFS, k_nlNL, kSDKDefStringsResourceID + index_enUS
+		kWildFS, k_itIT, kSDKDefStringsResourceID + index_enUS
+		kWildFS, k_nbNO, kSDKDefStringsResourceID + index_enUS
+		kWildFS, k_fiFI, kSDKDefStringsResourceID + index_enUS
+		kInDesignJapaneseFS, k_jaJP, kSDKDefStringsResourceID + index_jaJP
+	}
+};
+
+resource LocaleIndex (kSDKDefStringsNoTransResourceID)
+{
+	kStringTableRsrcType,
+	{
+		kWildFS, k_Wild, kSDKDefStringsNoTransResourceID + index_enUS
+	}
+};
+
+
+// Strings not being localized
+resource StringTable (kSDKDefStringsNoTransResourceID + index_enUS)
+{
+	k_enUS,									// Locale Id
+	kEuropeanMacToWinEncodingConverter,		// Character encoding converter
+	{
+	}
+};
+
+
+/*
+ * Scripting surface.
+ *
+ * Registered against the core script manager (covers ExtendScript and the
+ * scripting DOM generally) and explicitly against the UXP script manager, for
+ * both InDesign and InDesign Server feature sets.
+ */
+resource VersionedScriptElementInfo(1)
+{
+	//Contexts
+	{
+		kCS4ScriptVersion, kCoreScriptManagerBoss, kInDesignAllLanguagesFS, k_Wild,
+		kCS4ScriptVersion, kCoreScriptManagerBoss, kInDesignServerAllLanguagesFS, k_Wild,
+		kCS4ScriptVersion, kUxpScriptMgrBoss, kInDesignAllLanguagesFS, k_Wild,
+	}
+
+	//Elements
+	{
+		Method
+		{
+			kHttpLnkPlaceFromURLMethodScriptElement,
+			e_HttpLnkPlaceFromURL,
+			"place from URL",
+			"Load the place gun with a web asset addressed by an http(s) URL.",
+			VoidType,
+			{
+				p_HttpLnkURLParam, "url", "The http:// or https:// URL of the asset.", StringType, kRequired,
+			}
+		}
+
+		Method
+		{
+			kHttpLnkRelinkToURLMethodScriptElement,
+			e_HttpLnkRelinkToURL,
+			"relink to URL",
+			"Repoint this link at an http(s) URL and update it.",
+			VoidType,
+			{
+				p_HttpLnkURLParam, "url", "The http:// or https:// URL of the asset.", StringType, kRequired,
+			}
+		}
+
+		Property
+		{
+			kHttpLnkIsRemoteLinkPropertyScriptElement,
+			p_HttpLnkIsRemoteLink,
+			"is remote link",
+			"True if this link is served over http(s) by the HttpLink plug-in.",
+			BoolType,
+			{}
+			kNoAttributeClass,
+		}
+
+		Property
+		{
+			kHttpLnkRemoteURLPropertyScriptElement,
+			p_HttpLnkRemoteURL,
+			"remote URL",
+			"The http(s) URL this link resolves to, or an empty string if it is not a remote link.",
+			StringType,
+			{}
+			kNoAttributeClass,
+		}
+
+		Provider
+		{
+			kHttpLnkScriptProviderBoss
+			{
+				Object{ kDocumentObjectScriptElement },
+				Method{ kHttpLnkPlaceFromURLMethodScriptElement },
+			}
+		}
+
+		Provider
+		{
+			kHttpLnkScriptProviderBoss
+			{
+				Object{ kLinkObjectScriptElement },
+				Method{ kHttpLnkRelinkToURLMethodScriptElement },
+				Property{ kHttpLnkIsRemoteLinkPropertyScriptElement, kReadOnly },
+				Property{ kHttpLnkRemoteURLPropertyScriptElement, kReadOnly },
+			}
+		}
+	}
+};
+
+#endif // __ODFRC__
+
+#include "HttpLink_enUS.fr"
+#include "HttpLink_jaJP.fr"
