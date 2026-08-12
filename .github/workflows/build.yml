@@ -56,10 +56,23 @@ jobs:
           SDK_PATH: ${{ vars.SDK_PATH }}
         run: |
           set -euo pipefail
+          # Git Bash reports POSIX paths (/d/a/...) which MSBuild cannot use, so
+          # every path is emitted twice: `path` for bash, `winpath` for MSBuild.
+          emit() {
+            echo "path=$1" >> "$GITHUB_OUTPUT"
+            if [ "$RUNNER_OS" = "Windows" ]; then
+              echo "winpath=$(cygpath -w "$1")" >> "$GITHUB_OUTPUT"
+            else
+              echo "winpath=$1" >> "$GITHUB_OUTPUT"
+            fi
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          }
+          if [ "$RUNNER_OS" = "Windows" ] && [ -n "${SDK_PATH:-}" ]; then
+            SDK_PATH="$(cygpath -u "$SDK_PATH")"
+          fi
           if [ -n "${SDK_PATH:-}" ] && [ -d "$SDK_PATH/build" ]; then
             echo "Using the SDK already on this runner: $SDK_PATH"
-            echo "path=$SDK_PATH" >> "$GITHUB_OUTPUT"
-            echo "found=true" >> "$GITHUB_OUTPUT"
+            emit "$SDK_PATH"
           elif [ -n "${SDK_ZIP_URL:-}" ]; then
             echo "Downloading the SDK"
             curl -fsSL "$SDK_ZIP_URL" -o sdk.zip
@@ -72,8 +85,7 @@ jobs:
             else
               path="$PWD/sdk-unpacked"
             fi
-            echo "path=$path" >> "$GITHUB_OUTPUT"
-            echo "found=true" >> "$GITHUB_OUTPUT"
+            emit "$path"
           else
             echo "::warning::No SDK available, skipping the build. Set the SDK_PATH variable or the SDK_ZIP_URL secret."
             echo "found=false" >> "$GITHUB_OUTPUT"
@@ -88,7 +100,7 @@ jobs:
           rm -rf sdk
           if [ "${{ runner.os }}" = "Windows" ]; then
             # A directory junction, so MSBuild's relative paths resolve.
-            cmd //c mklink //J sdk "$(cygpath -w '${{ steps.sdk.outputs.path }}')"
+            cmd //c mklink //J sdk "${{ steps.sdk.outputs.winpath }}"
           else
             ln -s '${{ steps.sdk.outputs.path }}' sdk
           fi
@@ -138,7 +150,7 @@ jobs:
         shell: pwsh
         working-directory: build/win/prj
         env:
-          SDK_DIR: ${{ steps.sdk.outputs.path }}
+          SDK_DIR: ${{ steps.sdk.outputs.winpath }}
         run: |
           # genproj.py reads the source directory, so this also catches a project
           # that has drifted from the sources on disk.
