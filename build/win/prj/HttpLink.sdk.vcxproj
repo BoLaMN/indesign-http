@@ -11,6 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
+    <!-- The InDesign SDK, relative to this project. Matches ID_SDK_ROOT
+         in build/mac/prj/_shared_build_settings/plugin.sdk.xcconfig. -->
+    <id_sdk_dir>..\..\..\sdk</id_sdk_dir>
     <ProjectName>HttpLink</ProjectName>
     <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
     <ProjectGuid>{7A2C1E90-4B31-4E5B-9E2D-1C6F0A5D7B01}</ProjectGuid>
@@ -40,11 +43,7 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(id_sdk_dir)\build\win\prj\DebugX64.sdk.props" />
   </ImportGroup>
-  <PropertyGroup Label="UserMacros">
-    <!-- The InDesign SDK, relative to this project. Matches ID_SDK_ROOT
-         in build/mac/prj/_shared_build_settings/plugin.sdk.xcconfig. -->
-    <id_sdk_dir>..\..\..\sdk</id_sdk_dir>
-  </PropertyGroup>
+  <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\debugx64\sdk\</OutDir>

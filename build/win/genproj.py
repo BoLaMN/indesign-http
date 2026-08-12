@@ -125,13 +125,15 @@ def transform(text, name, srcdir, resprefix):
 
     # 6. Define id_sdk_dir. The SDK leaves this macro undefined and expects the
     #    consumer to supply it; ours points at <repo>/sdk to match the Mac side.
+    #    It goes in Globals, not UserMacros: MSBuild evaluates in document order
+    #    and the property sheets that use it are imported before UserMacros, so
+    #    defining it there leaves it empty and the import fails with MSB4019.
     text = text.replace(
-        "  <PropertyGroup Label=\"UserMacros\" />",
-        "  <PropertyGroup Label=\"UserMacros\">\n"
+        "  <PropertyGroup Label=\"Globals\">",
+        "  <PropertyGroup Label=\"Globals\">\n"
         "    <!-- The InDesign SDK, relative to this project. Matches ID_SDK_ROOT\n"
         "         in build/mac/prj/_shared_build_settings/plugin.sdk.xcconfig. -->\n"
-        "    <id_sdk_dir>..\\..\\..\\sdk</id_sdk_dir>\n"
-        "  </PropertyGroup>")
+        "    <id_sdk_dir>..\\..\\..\\sdk</id_sdk_dir>")
 
     # 7. ODFRC (the resource compiler) lives in the SDK's devtools. The SDK's
     #    getting-started guide tells you to add this to Executable Directories by
