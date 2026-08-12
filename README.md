@@ -8,7 +8,7 @@ InDesign has supported non-file links since CS5 (the Links subsystem dispatches
 on URI scheme) but Adobe only ships a handler for `file:`. This adds one for the
 web.
 
-Working on macOS, InDesign 21.5.1. Never compiled on Windows yet.
+Builds on macOS and Windows in CI. Tested against InDesign 21.5.1 on macOS.
 
 ## Features
 
@@ -73,7 +73,7 @@ Server never loads a UI plug-in, so everything functional lives in the model one
 
 ## Known gaps
 
-- Windows is generated but never compiled; expect real errors first time
+- Windows compiles in CI but has never been loaded into InDesign there
 - Plug-in prefix IDs are placeholders; shipping needs numbers from Adobe
   Developer Support, which has lead time
 - Japanese strings are still `[JP]` placeholders from the SDK sample

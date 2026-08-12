@@ -124,6 +124,24 @@ relying on MSVC precompiled headers, and run `Odfrc.exe` under Wine. Use a
 Windows box, a VM, or CI. CI needs a self-hosted runner or a cached copy of the
 SDK; it's too big and too licence-restricted to check out.
 
+## CI and releases
+
+`.github/workflows/build.yml` builds both plug-ins for macOS and Windows and
+publishes a release when you push a `v*` tag:
+
+```bash
+git tag v0.1.0 && git push origin v0.1.0
+```
+
+Both platforms are green. The only thing GitHub's runners don't provide is the
+SDK, which is a licensing problem rather than a technical one. Supply it either
+by setting the `SDK_PATH` variable on a self-hosted runner, or the `SDK_ZIP_URL`
+secret pointing at access-controlled storage. With neither, the build steps skip
+and say so.
+
+Publishing the compiled plug-ins is fine: shipping plug-ins is what the SDK is
+for. It's the SDK itself that must not be redistributed.
+
 ## InDesign Server
 
 No extra work. The model plug-in declares
