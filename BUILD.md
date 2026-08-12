@@ -63,9 +63,24 @@ Generates both `.vcxproj` files from the SDK's samples, supplying the `id_sdk_di
 macro the SDK leaves undefined and putting `devtools\bin` on `ExecutablePath` so
 ODFRC resolves without editing VC++ Directories by hand.
 
-**Never compiled.** The projects are structurally checked (valid XML, every
-source referenced, no dangling paths) but no Windows machine has run MSBuild
-over them. Expect real errors first time.
+Compiles green in CI. Four `.pln` files come out, both plug-ins in both
+configurations, each with its compiled resources.
+
+Two things are not obvious and will bite a local build:
+
+- **Pass the SDK paths as MSBuild globals.** The SDK's property sheets set
+  `ID_SDK_DIR`, `BOOST_HEADER_SEARCH_PATH`, `DVA_ROOT`, `DVA_SHARED` and
+  `ID_DVA` relative to the SDK's own `prj` directory, assuming the project lives
+  inside the SDK tree. Property names are case-insensitive and an imported sheet
+  outranks a `PropertyGroup` in your project, so only a command-line global wins.
+- **The SDK caps out at MSVC 17.12.** `source/precomp/msvc/xlocnum_hack.h`
+  patches a copy of the MSVC `<xlocnum>` header and hard-errors on any
+  `_MSC_VER` it hasn't been updated for; the newest it knows is 1942. Anything
+  newer needs an older toolset pinned with `/p:VCToolsVersion` (and a matching
+  `/p:PlatformToolset`). CI picks the newest installed toolset the SDK accepts.
+
+`.github/workflows/windows.yml` does all of this; copy the msbuild invocation
+from there for local builds.
 
 The SDK ships x64 only (`build/win` has `debugx64`/`releasex64` and the sample
 projects declare no ARM64 platform), so no ARM64 slice despite InDesign 21.9
@@ -76,9 +91,9 @@ directory, so new files are picked up automatically.
 
 ### CI
 
-`.github/workflows/windows.yml` builds both plug-ins with MSBuild. GitHub's
-Windows runners already have the VS 2022 v143 toolset, so the only missing piece
-is the SDK, and that is a licensing problem rather than a technical one.
+`.github/workflows/windows.yml` builds both plug-ins with MSBuild and is green.
+The only thing GitHub's runners don't provide is the SDK, and that is a licensing
+problem rather than a technical one.
 
 The Windows build only needs about 400 MB of the SDK (`build/win`,
 `devtools/bin`, `source/{open,precomp,public,sdksamples}`, `external`), not the
