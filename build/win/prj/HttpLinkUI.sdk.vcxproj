@@ -11,8 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <!-- The InDesign SDK, relative to this project. Matches ID_SDK_ROOT
-         in build/mac/prj/_shared_build_settings/plugin.sdk.xcconfig. -->
+    <!-- Fallback only: the SDK's property sheets redefine ID_SDK_DIR when
+         imported. Build with /p:ID_SDK_DIR=<path to SDK> to win. -->
     <id_sdk_dir>..\..\..\sdk</id_sdk_dir>
     <ProjectName>HttpLinkUI</ProjectName>
     <ProjectGuid>{7A2C1E90-4B31-4E5B-9E2D-1C6F0A5D7B02}</ProjectGuid>

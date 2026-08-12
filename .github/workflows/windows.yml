@@ -83,11 +83,17 @@ jobs:
         if: steps.sdk.outputs.found == 'true'
         shell: pwsh
         working-directory: build/win/prj
+        env:
+          SDK_DIR: ${{ steps.sdk.outputs.path }}
         run: |
           foreach ($proj in 'HttpLink.sdk.vcxproj', 'HttpLinkUI.sdk.vcxproj') {
             foreach ($cfg in 'Debug', 'Release') {
               "::group::$proj $cfg"
-              msbuild $proj /p:Configuration=$cfg /p:Platform=x64 /m /v:minimal
+              # ID_SDK_DIR must be a global property: the SDK's own property
+              # sheets set it to ..\..\.. (assuming the project lives inside the
+              # SDK) and a PropertyGroup in our project cannot outrank that.
+              msbuild $proj /p:Configuration=$cfg /p:Platform=x64 `
+                      /p:ID_SDK_DIR="$env:SDK_DIR" /m /v:minimal
               if ($LASTEXITCODE -ne 0) { throw "$proj $cfg failed" }
               "::endgroup::"
             }

@@ -128,11 +128,20 @@ def transform(text, name, srcdir, resprefix):
     #    It goes in Globals, not UserMacros: MSBuild evaluates in document order
     #    and the property sheets that use it are imported before UserMacros, so
     #    defining it there leaves it empty and the import fails with MSB4019.
+    #
+    #    This value is only a fallback. The SDK's own DebugX64.sdk.props sets
+    #    <ID_SDK_DIR>..\..\..</ID_SDK_DIR>, and MSBuild property names are
+    #    case-insensitive, so importing it overwrites whatever we put here -- and
+    #    every path derived from it (LIB_DIR, the Boost and AFL libs, the link
+    #    lists) is then computed against the wrong root. Pass it on the command
+    #    line instead: a global property cannot be overridden by a PropertyGroup.
+    #
+    #        msbuild ... /p:ID_SDK_DIR=<absolute path to the SDK>
     text = text.replace(
         "  <PropertyGroup Label=\"Globals\">",
         "  <PropertyGroup Label=\"Globals\">\n"
-        "    <!-- The InDesign SDK, relative to this project. Matches ID_SDK_ROOT\n"
-        "         in build/mac/prj/_shared_build_settings/plugin.sdk.xcconfig. -->\n"
+        "    <!-- Fallback only: the SDK's property sheets redefine ID_SDK_DIR when\n"
+        "         imported. Build with /p:ID_SDK_DIR=<path to SDK> to win. -->\n"
         "    <id_sdk_dir>..\\..\\..\\sdk</id_sdk_dir>")
 
     # 7. ODFRC (the resource compiler) lives in the SDK's devtools. The SDK's
