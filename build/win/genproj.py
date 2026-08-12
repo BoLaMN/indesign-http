@@ -111,8 +111,13 @@ def transform(text, name, srcdir, resprefix):
     text = re.sub(r"\.\.\\\.\.\\\.\.\\source\\(?!httplink)",
                   r"$(id_sdk_dir)\\source\\", text)
 
-    # 4. Response file lives in the SDK's prj directory, not ours.
+    # 4. Property sheets and response files live in the SDK's prj directory, not
+    #    ours. Left bare they resolve against our project dir and MSBuild fails
+    #    with MSB4019 before compiling anything.
     text = text.replace("@SDKCPPOptions.rsp", r"@$(id_sdk_dir)\build\win\prj\SDKCPPOptions.rsp")
+    text = text.replace('@"SDKODFRCOptions.rsp"', r'@"$(id_sdk_dir)\build\win\prj\SDKODFRCOptions.rsp"')
+    text = re.sub(r'<Import Project="([A-Za-z0-9_]+\.sdk\.props)"',
+                  r'<Import Project="$(id_sdk_dir)\\build\\win\\prj\\\1"', text)
 
     # 5. Resource merge scripts: give our plug-in its own resource prefix so two
     #    plug-ins building side by side don't stomp each other's intermediates.

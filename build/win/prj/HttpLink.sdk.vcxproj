@@ -34,11 +34,11 @@
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="ReleaseX64.sdk.props" />
+    <Import Project="$(id_sdk_dir)\build\win\prj\ReleaseX64.sdk.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="DebugX64.sdk.props" />
+    <Import Project="$(id_sdk_dir)\build\win\prj\DebugX64.sdk.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
     <!-- The InDesign SDK, relative to this project. Matches ID_SDK_ROOT
@@ -157,11 +157,11 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\..\source\httplink\HttpLink.fr">
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">odfrc $(ODFRC_ADDITIONAL_FLAGS) "%(FullPath)" -o "$(IntDir)%(Filename).fres" -d DEBUG  -i "..\..\..\source\httplink" @"SDKODFRCOptions.rsp"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">odfrc $(ODFRC_ADDITIONAL_FLAGS) "%(FullPath)" -o "$(IntDir)%(Filename).fres" -d DEBUG  -i "..\..\..\source\httplink" @"$(id_sdk_dir)\build\win\prj\SDKODFRCOptions.rsp"
     </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)TriggerResourceDeps.obj;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename).fres;%(Outputs)</Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">odfrc $(ODFRC_ADDITIONAL_FLAGS) "%(FullPath)" -o "$(IntDir)%(Filename).fres"   -i "..\..\..\source\httplink" @"SDKODFRCOptions.rsp"
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">odfrc $(ODFRC_ADDITIONAL_FLAGS) "%(FullPath)" -o "$(IntDir)%(Filename).fres"   -i "..\..\..\source\httplink" @"$(id_sdk_dir)\build\win\prj\SDKODFRCOptions.rsp"
     </Command>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)TriggerResourceDeps.obj;%(AdditionalInputs)</AdditionalInputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename).fres;%(Outputs)</Outputs>
