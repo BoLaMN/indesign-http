@@ -86,6 +86,29 @@ def inject_sources(text, name, srcdir):
     return text
 
 
+def copy_response_files():
+    """Copy the SDK's cl.exe / ODFRC response files, fixing their include paths.
+
+    They contain /I "..\\..\\..\\source\\..." relative to the SDK's own prj
+    directory. Response files are handed to the compiler verbatim, so MSBuild
+    macros are no help; the paths have to be correct as written. Since the tool's
+    working directory is *our* prj directory, one more hop gets there, given the
+    SDK sits at <repo>/sdk as the build files assume.
+    """
+    for fname in ("SDKCPPOptions.rsp", "SDKODFRCOptions.rsp"):
+        src = os.path.join(SDK_PRJ, fname)
+        if not os.path.exists(src):
+            print("skip (absent): %s" % fname)
+            continue
+        with open(src, encoding="utf-8") as fh:
+            text = fh.read()
+        text = text.replace("..\\..\\..\\", "..\\..\\..\\sdk\\")
+        out = os.path.join(OUT_PRJ, fname)
+        with open(out, "w", encoding="utf-8") as fh:
+            fh.write(text)
+        print("wrote %s" % os.path.relpath(out, REPO))
+
+
 def transform(text, name, srcdir, resprefix):
     # 1. Longest-first so CusHttpLnkLinkResourceHelperHandler isn't clipped by
     #    the shorter CusHttpLnkLinkResourceHandler rule.
@@ -114,8 +137,9 @@ def transform(text, name, srcdir, resprefix):
     # 4. Property sheets and response files live in the SDK's prj directory, not
     #    ours. Left bare they resolve against our project dir and MSBuild fails
     #    with MSB4019 before compiling anything.
-    text = text.replace("@SDKCPPOptions.rsp", r"@$(id_sdk_dir)\build\win\prj\SDKCPPOptions.rsp")
-    text = text.replace('@"SDKODFRCOptions.rsp"', r'@"$(id_sdk_dir)\build\win\prj\SDKODFRCOptions.rsp"')
+    #    The .rsp files are copied into our prj directory with corrected include
+    #    paths (see copy_response_files), so the bare names the sample uses are
+    #    already right and are left alone.
     text = re.sub(r'<Import Project="([A-Za-z0-9_]+\.sdk\.props)"',
                   r'<Import Project="$(id_sdk_dir)\\build\\win\\prj\\\1"', text)
 
@@ -167,6 +191,7 @@ def main():
     if not os.path.isdir(SDK_PRJ):
         sys.exit("SDK not found at %s -- see docs/build.md" % SDK_PRJ)
     os.makedirs(OUT_PRJ, exist_ok=True)
+    copy_response_files()
 
     jobs = [
         ("CustomHttpLink", "HttpLink", "httplink", "HttpLnk"),
