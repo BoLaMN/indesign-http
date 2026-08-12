@@ -69,6 +69,29 @@ jobs:
       - uses: microsoft/setup-msbuild@v2
         if: steps.sdk.outputs.found == 'true'
 
+      - name: Pick a toolset the SDK supports
+        id: toolset
+        if: steps.sdk.outputs.found == 'true'
+        shell: pwsh
+        run: |
+          # sdk/source/precomp/msvc/xlocnum_hack.h patches a copy of the MSVC
+          # <xlocnum> header and hard-fails on any _MSC_VER it has not been
+          # updated for. The newest it knows about is 1942 (VS 17.12), so the
+          # runner's default toolset is too new. Pick the newest installed one
+          # that the SDK actually supports.
+          $ok = '14.42', '14.39', '14.38', '14.31'   # _MSC_VER 1942, 1939, 1938, 1931
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          $vs = & $vswhere -latest -property installationPath
+          $dir = Join-Path $vs 'VC\Tools\MSVC'
+          $installed = Get-ChildItem $dir -Directory | ForEach-Object { $_.Name } | Sort-Object -Descending
+          "Installed toolsets: $($installed -join ', ')"
+          $pick = $installed | Where-Object { $v = $_; $ok | Where-Object { $v.StartsWith($_) } } | Select-Object -First 1
+          if (-not $pick) {
+            throw "No SDK-compatible MSVC toolset installed. Supported: $($ok -join ', '). Found: $($installed -join ', ')."
+          }
+          "Using $pick"
+          "version=$pick" >> $env:GITHUB_OUTPUT
+
       - name: Regenerate the project files
         if: steps.sdk.outputs.found == 'true'
         shell: pwsh
@@ -99,6 +122,7 @@ jobs:
                       /p:DVA_ROOT="$env:SDK_DIR\external\dva" `
                       /p:DVA_SHARED="$env:SDK_DIR\external\dva\shared" `
                       /p:ID_DVA="$env:SDK_DIR\dvaUtils" `
+                      /p:VCToolsVersion="${{ steps.toolset.outputs.version }}" `
                       /m /v:minimal
               if ($LASTEXITCODE -ne 0) { throw "$proj $cfg failed" }
               "::endgroup::"
