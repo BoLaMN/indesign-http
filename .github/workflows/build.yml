@@ -75,7 +75,14 @@ jobs:
             emit "$SDK_PATH"
           elif [ -n "${SDK_ZIP_URL:-}" ]; then
             echo "Downloading the SDK"
-            curl -fsSL "$SDK_ZIP_URL" -o sdk.zip
+            code=$(curl -sSL -w '%{http_code}' -o sdk.zip "$SDK_ZIP_URL" || echo 000)
+            if [ "$code" = "403" ] || [ "$code" = "401" ]; then
+              echo "::error::SDK download refused ($code). Pre-signed URLs expire; refresh the SDK_ZIP_URL secret, or use a self-hosted runner with SDK_PATH."
+              exit 1
+            elif [ "$code" != "200" ]; then
+              echo "::error::SDK download failed with HTTP $code."
+              exit 1
+            fi
             mkdir -p sdk-unpacked
             unzip -qq sdk.zip -d sdk-unpacked
             # The zip may or may not have a single wrapper directory.
