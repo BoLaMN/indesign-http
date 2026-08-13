@@ -1,11 +1,12 @@
 # Building
 
 ```bash
-build/mac/build.sh            # both plug-ins, Release + Debug
-build/mac/build.sh Release    # or one config
+cd build/mac/prj
+xcodebuild -workspace HttpLink.xcworkspace -scheme Release -configuration Default build
 ```
 
-Use the script, not bare `xcodebuild`. See [Why the script](#why-the-script).
+Or open `build/mac/prj/HttpLink.xcworkspace` in Xcode and press Build. There is a
+`Debug` scheme as well.
 
 ## You need
 
@@ -25,21 +26,21 @@ If you keep the SDK elsewhere, change `ID_SDK_ROOT` in
 `build/mac/release_cocoa64/SDK/*.InDesignPlugin`, universal (arm64 + x86_64).
 Debug plug-ins only load into a debug InDesign.
 
-## Why the script
+## Why a workspace rather than the two projects
 
-The two projects share one output directory, which makes per-project `xcodebuild`
-calls quietly destructive:
+Both projects write into `build/mac/<config>_cocoa64/SDK`, and Xcode's clean
+removes that whole directory. Cleaning one project therefore deletes the other
+plug-in too. InDesign then starts happily with whichever half survived, and if
+the model plug-in is the one that went, nothing handles the scheme and every
+link shows `?`.
 
-- `clean` on either deletes the other's bundle. InDesign then starts fine and the
-  panel appears, but with the model plug-in gone nothing handles the scheme and
-  every link shows `?`.
-- Worse, a plain `build` afterwards can relink the binary while thinking the
-  ODFRC resource step is up to date, producing a bundle with no `idrc_*`
-  resources. InDesign rejects that with "does not recognize … as a valid
-  plug-in", which looks like a code fault but is stale build state.
+Worse, a plain build afterwards can relink while thinking the ODFRC resource
+step is up to date, leaving a bundle with no `idrc_*` resources. InDesign rejects
+that with "does not recognize ... as a valid plug-in", which reads like a code
+fault but is stale build state.
 
-The script cleans everything, builds everything, then checks each bundle actually
-has compiled resources before it says ok.
+The schemes cover both plug-ins, so a clean is always a clean of everything and
+neither situation can arise.
 
 ## Out-of-tree builds
 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Builds both plug-ins together. Cleaning a single project would wipe the
+     shared output directory and take the other plug-in with it, so the scheme
+     always covers both. -->
+<Scheme LastUpgradeVersion = "1600" version = "1.7">
+   <BuildAction parallelizeBuildables = "NO" buildImplicitDependencies = "YES">
+      <BuildActionEntries>
+         <BuildActionEntry buildForRunning = "YES" buildForTesting = "YES" buildForProfiling = "YES" buildForArchiving = "YES" buildForAnalyzing = "YES">
+            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "F957086215C90B3E00C95573"
+               BuildableName = "HttpLink.sdk.InDesignPlugin" BlueprintName = "Release_Cocoa64"
+               ReferencedContainer = "container:HttpLink.xcodeproj"></BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry buildForRunning = "YES" buildForTesting = "YES" buildForProfiling = "YES" buildForArchiving = "YES" buildForAnalyzing = "YES">
+            <BuildableReference BuildableIdentifier = "primary" BlueprintIdentifier = "F957086215C90B3E00C95573"
+               BuildableName = "HttpLinkUI.sdk.InDesignPlugin" BlueprintName = "Release_Cocoa64"
+               ReferencedContainer = "container:HttpLinkUI.xcodeproj"></BuildableReference>
+         </BuildActionEntry>
+      </BuildActionEntries>
+   </BuildAction>
+</Scheme>

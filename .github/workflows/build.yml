@@ -117,9 +117,11 @@ jobs:
       - name: Build (macOS)
         if: steps.sdk.outputs.found == 'true' && runner.os == 'macOS'
         shell: bash
+        working-directory: build/mac/prj
         run: |
           xcodebuild -version
-          build/mac/build.sh Release
+          xcodebuild -workspace HttpLink.xcworkspace -scheme Release \
+                     -configuration Default clean build
 
       # -------------------------------------------------------------- Windows
       - name: Pick a toolset the SDK supports
