@@ -65,7 +65,7 @@ failing to register them.
 source/httplink/     model plug-in: links, HTTP, scripting, Link Info
 source/httplinkui/   UI plug-in: panel, drag-drop, relink dialog
 build/mac/           Xcode projects + build.sh
-build/win/           generated VS projects + genproj.py
+build/win/           Visual Studio projects
 sdk/                 InDesign SDK, not committed (see BUILD.md)
 ```
 
