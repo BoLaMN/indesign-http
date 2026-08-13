@@ -27,11 +27,6 @@
     <ID_SDK_DIR>..\..\..\sdk</ID_SDK_DIR>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <PluginSourceDir>..\..\..\source\httplinkui</PluginSourceDir>
-    <PluginResPrefix>HttpLnkUI</PluginResPrefix>
-    <PluginLinkList>$(UI_PLUGIN_LINKLIST);$(DROVER_LINKLIST);$(AFLLib)</PluginLinkList>
-  </PropertyGroup>
 
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
 
@@ -46,8 +41,17 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <!-- The SDK's sheets bring in the link lists and library locations. -->
     <Import Project="$(ID_SDK_DIR)\build\win\prj\$(Configuration)X64.sdk.props" />
-    <Import Project="HttpLink.common.props" />
   </ImportGroup>
+
+  <PropertyGroup>
+    <PluginSourceDir>..\..\..\source\httplinkui</PluginSourceDir>
+    <PluginResPrefix>HttpLnkUI</PluginResPrefix>
+    <PluginLinkList>$(UI_PLUGIN_LINKLIST);$(DROVER_LINKLIST);$(AFLLib)</PluginLinkList>
+  </PropertyGroup>
+
+  <!-- Imported last: it uses the properties just set, and the link lists the
+       SDK's sheets define. -->
+  <Import Project="HttpLink.common.props" />
 
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>
