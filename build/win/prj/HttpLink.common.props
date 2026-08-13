@@ -2,8 +2,14 @@
 <!--
   Settings shared by both plug-in projects.
 
-  Each project sets PluginSourceDir, PluginResPrefix and PluginLinkList, then
-  imports this after the SDK's own property sheets.
+  Each project sets PluginSourceDir, PluginExtraIncludes and PluginLinkList,
+  then imports this after the SDK's own property sheets.
+
+  merge_res.cmd takes the .res basename, which the resource compiler derives
+  from the .rc, so it is just $(ProjectName). The SDK's CustomHttpLink sample
+  passes "CusDtLnk" here, which is the CustomDataLink sample's prefix and finds
+  nothing; it prints usage and exits 0, so the build looks fine while the
+  VERSIONINFO resource never makes it into the plug-in.
 
   The include lists below came from the SDK's SDKCPPOptions.rsp and
   SDKODFRCOptions.rsp, with the leading ..\..\.. swapped for $(ID_SDK_DIR).
@@ -54,10 +60,10 @@
          steps merge them into the plug-in and put the originals back. A .pln
          without them loads as "not a valid plug-in". -->
     <PreLinkEvent>
-      <Command>merge_res.cmd "$(IntDir)" $(PluginResPrefix) &amp; echo Deleting old resources... &amp; del /f /s "$(TargetDir)($(TargetName) Resources)\"*.idrc &gt; $(IntDir)prevDeletedResources.txt &amp; xcopy /Q /E "$(IntDir)"*.idrc "$(TargetDir)($(TargetName) Resources)\" /Y</Command>
+      <Command>merge_res.cmd "$(IntDir)" $(ProjectName) &amp; echo Deleting old resources... &amp; del /f /s "$(TargetDir)($(TargetName) Resources)\"*.idrc &gt; $(IntDir)prevDeletedResources.txt &amp; xcopy /Q /E "$(IntDir)"*.idrc "$(TargetDir)($(TargetName) Resources)\" /Y</Command>
     </PreLinkEvent>
     <PostBuildEvent>
-      <Command>restore_res.cmd "$(IntDir)" $(PluginResPrefix)</Command>
+      <Command>restore_res.cmd "$(IntDir)" $(ProjectName)</Command>
     </PostBuildEvent>
 
     <Link>

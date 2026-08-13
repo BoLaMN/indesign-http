@@ -46,7 +46,6 @@
   <PropertyGroup>
     <PluginSourceDir>..\..\..\source\httplink</PluginSourceDir>
     <PluginExtraIncludes>$(ID_SDK_DIR)\source\open\includes\architecture</PluginExtraIncludes>
-    <PluginResPrefix>HttpLnk</PluginResPrefix>
     <PluginLinkList>$(MODEL_PLUGIN_LINKLIST);$(AFLLib);$(BoostDateTimeLib)</PluginLinkList>
   </PropertyGroup>
 

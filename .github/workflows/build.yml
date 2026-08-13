@@ -166,7 +166,7 @@ jobs:
               # them relative to the SDK's own prj directory, assuming the project
               # lives inside the SDK tree, and an imported sheet outranks a
               # PropertyGroup in our project.
-              msbuild $proj /p:Configuration=$cfg /p:Platform=x64 `
+              $out = msbuild $proj /p:Configuration=$cfg /p:Platform=x64 `
                       /p:ID_SDK_DIR="$env:SDK_DIR" `
                       /p:BOOST_HEADER_SEARCH_PATH="$env:SDK_DIR\external\dva\third_party\boost_libraries" `
                       /p:DVA_ROOT="$env:SDK_DIR\external\dva" `
@@ -174,8 +174,12 @@ jobs:
                       /p:ID_DVA="$env:SDK_DIR\dvaUtils" `
                       /p:VCToolsVersion="${{ steps.toolset.outputs.version }}" `
                       /p:PlatformToolset="${{ steps.toolset.outputs.platform }}" `
-                      /m /v:minimal
+                      /m /v:minimal 2>&1
+              $out | Out-Host
               if ($LASTEXITCODE -ne 0) { throw "$proj $cfg failed" }
+              # merge_res.cmd prints usage and exits 0 when it cannot find the
+              # .res, so a resource that never got merged looks like success.
+              if ($out -match 'Bad arguments to merge_res') { throw "$proj $cfg: merge_res.cmd got bad arguments" }
               "::endgroup::"
             }
           }

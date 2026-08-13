@@ -46,7 +46,6 @@
   <PropertyGroup>
     <PluginSourceDir>..\..\..\source\httplinkui</PluginSourceDir>
     <PluginExtraIncludes>$(ID_SDK_DIR)\source\open\interfaces\ui;$(ID_SDK_DIR)\source\open\includes\architecture</PluginExtraIncludes>
-    <PluginResPrefix>HttpLnkUI</PluginResPrefix>
     <PluginLinkList>$(UI_PLUGIN_LINKLIST);$(DROVER_LINKLIST);$(AFLLib)</PluginLinkList>
   </PropertyGroup>
 
