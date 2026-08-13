@@ -179,7 +179,7 @@ jobs:
               if ($LASTEXITCODE -ne 0) { throw "$proj $cfg failed" }
               # merge_res.cmd prints usage and exits 0 when it cannot find the
               # .res, so a resource that never got merged looks like success.
-              if ($out -match 'Bad arguments to merge_res') { throw "$proj $cfg: merge_res.cmd got bad arguments" }
+              if ($out -match 'Bad arguments to merge_res') { throw "${proj} ${cfg}: merge_res.cmd got bad arguments" }
               "::endgroup::"
             }
           }
