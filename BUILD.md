@@ -63,12 +63,7 @@ so adding a file needs no project edit.
 Compiles green in CI. Four `.pln` files come out, both plug-ins in both
 configurations, each with its compiled resources.
 
-> The projects were later simplified from a generator to plain checked-in
-> MSBuild files. That change has **not** been through CI yet, because the
-> pre-signed SDK URL expired first. Re-run the workflow with a fresh URL before
-> trusting it.
-
-Two things are not obvious and will bite a local build:
+Three things are not obvious and will bite a local build:
 
 - **Pass the SDK paths as MSBuild globals.** The SDK's property sheets set
   `ID_SDK_DIR`, `BOOST_HEADER_SEARCH_PATH`, `DVA_ROOT`, `DVA_SHARED` and
