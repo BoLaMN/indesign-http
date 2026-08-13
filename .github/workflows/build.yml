@@ -152,9 +152,6 @@ jobs:
         env:
           SDK_DIR: ${{ steps.sdk.outputs.winpath }}
         run: |
-          # genproj.py reads the source directory, so this also catches a project
-          # that has drifted from the sources on disk.
-          python ../genproj.py
           foreach ($proj in 'HttpLink.sdk.vcxproj', 'HttpLinkUI.sdk.vcxproj') {
             foreach ($cfg in 'Debug', 'Release') {
               "::group::$proj $cfg"

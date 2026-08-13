@@ -55,13 +55,10 @@ they're overridden explicitly, since `InDesignModel.framework` and
 
 ## Windows
 
-```bash
-python3 build/win/genproj.py
-```
-
-Generates both `.vcxproj` files from the SDK's samples, supplying the `id_sdk_dir`
-macro the SDK leaves undefined and putting `devtools\bin` on `ExecutablePath` so
-ODFRC resolves without editing VC++ Directories by hand.
+Open `build/win/prj/*.sdk.vcxproj` in Visual Studio, or build from the command
+line. The projects are ordinary checked-in MSBuild files: two thin `.vcxproj`
+plus `HttpLink.common.props` holding everything they share. Sources are globbed,
+so adding a file needs no project edit.
 
 Compiles green in CI. Four `.pln` files come out, both plug-ins in both
 configurations, each with its compiled resources.
@@ -85,9 +82,6 @@ from there for local builds.
 The SDK ships x64 only (`build/win` has `debugx64`/`releasex64` and the sample
 projects declare no ARM64 platform), so no ARM64 slice despite InDesign 21.9
 running natively on Windows ARM.
-
-Re-run `genproj.py` after adding or renaming sources. It reads the source
-directory, so new files are picked up automatically.
 
 ### CI
 
